@@ -39,11 +39,6 @@ func parseLogFile(filename string) (lines []*parsedLine, err error) {
 		parser := newLineParse()
 		parsed := parser.parseLine(line)
 		lines = append(lines, parsed)
-		// fmt.Printf("%+v\n", parsed)
-		// if i < 0 {
-		// 	break
-		// }
-		// i--
 	}
 
 	err = scanner.Err()
@@ -54,8 +49,8 @@ func parseLogFile(filename string) (lines []*parsedLine, err error) {
 	return
 }
 
-func Parse() {
-	parsed, err := parseLogFile("test.log")
+func Parse(filename string, regex string) {
+	parsed, err := parseLogFile(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
