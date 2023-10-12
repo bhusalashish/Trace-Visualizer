@@ -65,7 +65,7 @@ func parseLogFile(filename string, patterns []string) (lines []*parsedLine, err 
 	return
 }
 
-func Parse(filename string, patterns []string) {
+func Parse(filename string, patterns []string, fileToSave string) {
 	parsed, err := parseLogFile(filename, patterns)
 	if err != nil {
 		log.Fatal(err)
@@ -79,9 +79,22 @@ func Parse(filename string, patterns []string) {
 	b, err := json.Marshal(TraceReq{Data: []*TraceReqBody{body}})
 	if err != nil {
 		log.Fatal(err)
+	} else {
+		saveJsonToFile(fileToSave, b)
 	}
-	os.Stdout.Write(b)
-	// fmt.Printf("%+v\n", body)
+}
+
+func saveJsonToFile(fileToSave string, jsonByte []byte) {
+	file, err := os.Create(fileToSave)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	_, err = file.Write(jsonByte)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type TraceReq struct {
