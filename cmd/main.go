@@ -9,9 +9,8 @@ import (
 )
 
 func main() {
-	fmt.Println("Let's Parse!")
-
-	var filename, regex string
+	var filename string
+	var patterns []string
 
 	var rootCmd = &cobra.Command{
 		Use:   "parse",
@@ -19,12 +18,13 @@ func main() {
 	}
 
 	rootCmd.Flags().StringVarP(&filename, "file", "f", "", "File to search")
-	rootCmd.Flags().StringVarP(&regex, "regex", "r", "", "Tracehandle regex to search for")
+	rootCmd.PersistentFlags().StringSliceVarP(&patterns, "regex", "r", []string{}, "Tracehandle regex pattern to match (can specify multiple patterns)")
+
 	rootCmd.MarkFlagRequired("file")
 	rootCmd.MarkFlagRequired("regex")
 
 	rootCmd.Run = func(cmd *cobra.Command, args []string) {
-		tracevisualizer.Parse(filename, regex)
+		tracevisualizer.Parse(filename, patterns)
 	}
 
 	if err := rootCmd.Execute(); err != nil {

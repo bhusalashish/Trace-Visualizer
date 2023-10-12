@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -24,7 +25,18 @@ func isDestructor(line string) bool {
 	return strings.HasSuffix(line, destructorKey)
 }
 
-func parseLogFile(filename string) (lines []*parsedLine, err error) {
+func isValidLogHandler(line string, patterns []string) bool {
+	for _, pattern := range patterns {
+		regex := regexp.MustCompile(pattern)
+		if regex.MatchString(line) {
+			return true
+		}
+	}
+	println("skipping line as no match found:", line)
+	return false
+}
+
+func parseLogFile(filename string, patterns []string) (lines []*parsedLine, err error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return
@@ -36,6 +48,9 @@ func parseLogFile(filename string) (lines []*parsedLine, err error) {
 	// i := 10
 	for scanner.Scan() {
 		line := scanner.Text()
+		if !isValidLogHandler(line, patterns) {
+			continue
+		}
 		parser := newLineParse()
 		parsed := parser.parseLine(line)
 		lines = append(lines, parsed)
@@ -49,8 +64,8 @@ func parseLogFile(filename string) (lines []*parsedLine, err error) {
 	return
 }
 
-func Parse(filename string, regex string) {
-	parsed, err := parseLogFile(filename)
+func Parse(filename string, patterns []string) {
+	parsed, err := parseLogFile(filename, patterns)
 	if err != nil {
 		log.Fatal(err)
 	}
