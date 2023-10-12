@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	fmt.Printf("Hey main!")
+	fmt.Println("Let's Parse!")
 	tracevisualizer.Parse()
 }
