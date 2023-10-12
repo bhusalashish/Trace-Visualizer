@@ -34,7 +34,6 @@ func isValidLogHandler(line string, patterns []string) bool {
 			return true
 		}
 	}
-	println("skipping line as no match found:", line)
 	return false
 }
 
