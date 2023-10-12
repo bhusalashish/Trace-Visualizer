@@ -28,7 +28,9 @@ func isDestructor(line string) bool {
 func isValidLogHandler(line string, patterns []string) bool {
 	for _, pattern := range patterns {
 		regex := regexp.MustCompile(pattern)
-		if regex.MatchString(line) {
+		// info line example: 2023-10-09 13:43:52.695425 40884 StrataTcamProfileSm  8 defaultProfileName
+		lineWords := strings.Fields(line)
+		if len(lineWords) >= 4 && regex.MatchString(lineWords[3]) {
 			return true
 		}
 	}
